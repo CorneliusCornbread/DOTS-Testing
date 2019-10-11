@@ -7,7 +7,7 @@ using Unity.Transforms;
 public class TransformAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 {
     public float rotSpeed;
-
+    
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         dstManager.AddComponentData(entity, new TransformStruct 
@@ -22,6 +22,5 @@ public class TransformAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         });
 
         dstManager.AddComponentData(entity, new RotationEulerXYZ());
-        dstManager.AddComponentData(entity, new Scale());
     }
 }

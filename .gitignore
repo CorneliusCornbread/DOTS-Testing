@@ -48,3 +48,6 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
+
+Assets/EntityCache.meta
+Assets/StreamingAssets/EntityCache.meta
