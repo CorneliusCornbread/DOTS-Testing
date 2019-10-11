@@ -336,7 +336,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_MotionType: 0
-  m_Mass: 1
+  m_Mass: 5
   m_LinearDamping: 0.01
   m_AngularDamping: 0.05
   m_InitialLinearVelocity:
@@ -347,7 +347,7 @@ MonoBehaviour:
     x: 0
     y: 0
     z: 0
-  m_GravityFactor: 1
+  m_GravityFactor: 2
   m_OverrideDefaultMassDistribution: 0
   m_CenterOfMass:
     x: 0
@@ -364,11 +364,11 @@ MonoBehaviour:
     y: 0.4
     z: 0.4
   m_CustomTags:
-    Tag00: 0
-    Tag01: 0
-    Tag02: 0
-    Tag03: 0
-    Tag04: 0
-    Tag05: 0
-    Tag06: 0
-    Tag07: 0
+    Tag00: 1
+    Tag01: 1
+    Tag02: 1
+    Tag03: 1
+    Tag04: 1
+    Tag05: 1
+    Tag06: 1
+    Tag07: 1

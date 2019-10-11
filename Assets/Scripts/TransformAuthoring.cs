@@ -15,7 +15,6 @@ public class TransformAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             speed = rotSpeed
         });
 
-        dstManager.AddComponentData(entity, new RotationEulerXYZ());
         dstManager.AddComponentData(entity, new InputStruct());
     }
 }
