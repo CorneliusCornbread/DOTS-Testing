@@ -10,17 +10,12 @@ public class TransformAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponentData(entity, new TransformStruct 
-        { 
-            rotX = rotSpeed, 
-            rotY = rotSpeed, 
-            rotZ = rotSpeed,
-
-            transformX = 0,
-            transformY = 0,
-            transformZ = 0
+        dstManager.AddComponentData(entity, new TransformStruct
+        {
+            speed = rotSpeed
         });
 
         dstManager.AddComponentData(entity, new RotationEulerXYZ());
+        dstManager.AddComponentData(entity, new InputStruct());
     }
 }
