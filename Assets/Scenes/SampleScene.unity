@@ -14,8 +14,8 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
-  m_Fog: 1
-  m_FogColor: {r: 0.65080994, g: 0.666729, b: 0.7075472, a: 1}
+  m_Fog: 0
+  m_FogColor: {r: 0.65080994, g: 0.666729, b: 0.7075472, a: 0.22745098}
   m_FogMode: 3
   m_FogDensity: 0.05
   m_LinearFogStart: 0
@@ -98,7 +98,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000000, guid: beb4f62dd50ab4f498a33e326ebc8bd2,
+  m_LightingDataAsset: {fileID: 112000004, guid: beb4f62dd50ab4f498a33e326ebc8bd2,
     type: 2}
   m_UseShadowmask: 0
 --- !u!196 &4
@@ -289,8 +289,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1687258581}
-  m_LocalRotation: {x: -0.07801426, y: 0.91172284, z: -0.20465343, w: -0.34755188}
-  m_LocalPosition: {x: 7.447055, y: 4.275328, z: 4.9186954}
+  m_LocalRotation: {x: 0.5015726, y: -0.49827933, z: 0.5082676, w: 0.49173844}
+  m_LocalPosition: {x: 1.5791533, y: 62.84684, z: 2.3793335}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -356,7 +356,7 @@ MonoBehaviour:
   _SceneAsset: {fileID: 102900000, guid: 859410f87c236994486517edd9a67c0f, type: 3}
   _HierarchyColor: {r: 0.8679245, g: 0.84068495, b: 0.12691349, a: 1}
   AutoLoadScene: 1
-  m_SubSceneHeader: {fileID: 11400000, guid: 792186408bf599541a8b64f879aa9e39, type: 2}
+  m_SubSceneHeader: {fileID: 11400000, guid: e4a00ef5c12b45d42b53d92c639a0be9, type: 2}
 --- !u!4 &1716511216
 Transform:
   m_ObjectHideFlags: 0
@@ -381,6 +381,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2138677393}
   - component: {fileID: 2138677392}
+  - component: {fileID: 2138677394}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -410,8 +411,8 @@ Light:
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
-    m_Bias: 0.02
-    m_NormalBias: 0.1
+    m_Bias: 1
+    m_NormalBias: 1
     m_NearPlane: 0.1
     m_CullingMatrixOverride:
       e00: 1
@@ -463,3 +464,16 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 45, y: 130, z: 90}
+--- !u!114 &2138677394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2138677391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UsePipelineSettings: 1
