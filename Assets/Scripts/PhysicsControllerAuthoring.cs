@@ -8,5 +8,6 @@ public class PhysicsControllerAuthoring : MonoBehaviour, IConvertGameObjectToEnt
     {
         dstManager.AddComponentData(entity, new InputStruct());
         dstManager.AddComponentData(entity, new PhysicsControllerStruct());
+        //dstManager.AddComponentData(entity, new RotationEulerXYZ());
     }
 }
