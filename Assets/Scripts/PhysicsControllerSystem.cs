@@ -52,8 +52,8 @@ public class PhysicsControllerSystem : ComponentSystem
         {
             float3 targetVelocity = new float3();
             float speed = 1000;
-            float gravity = 2;
-            float mass = 3;
+            float gravity = 1;
+            float mass = 1;
 
             float maxVelocityChange = 10;
 
@@ -65,7 +65,7 @@ public class PhysicsControllerSystem : ComponentSystem
 
             // Calculate how fast we should be moving
             //targetVelocity = transform.TransformDirection(targetVelocity); //change from local space to world space
-            targetVelocity = Rotate(toWorld.Value, targetVelocity);
+            targetVelocity = Rotate(toWorld.Value, targetVelocity); //Change from local space to world space
             targetVelocity *= speed * Time.deltaTime;
 
             // Apply a force that attempts to reach our target velocity
@@ -76,9 +76,57 @@ public class PhysicsControllerSystem : ComponentSystem
             velocityChange.y = -gravity * mass; //If we are't wall running or climbing a ladder apply gravity to the player
 
             rb.Linear += velocityChange;
-            rb.Angular = new float3(0, 0, 0);
 
-            rot.Value.value = new float4(0, 0, 0, rot.Value.value.w);
+            float baseSpd = 2;
+            float maxSpd = 4;
+            float mult = 5;
+
+            if (rot.Value.value.x > 0)
+            {
+                rb.Angular.x = math.clamp(rot.Value.value.x * mult, baseSpd, maxSpd);
+            }
+
+            else if (rot.Value.value.x < 0)
+            {
+                rb.Angular.x = rb.Angular.x = math.clamp(rot.Value.value.x * mult, -baseSpd, -maxSpd);
+            }
+
+            else
+            {
+                rb.Angular.x = 0;
+            }
+
+            if (rot.Value.value.y > 0)
+            {
+                rb.Angular.y = math.clamp(rot.Value.value.y * mult, baseSpd, maxSpd);
+            }
+
+            else if (rot.Value.value.y < 0)
+            {
+                rb.Angular.y = math.clamp(rot.Value.value.y * mult, -baseSpd, -maxSpd);
+            }
+
+            else
+            {
+                rb.Angular.y = 0;
+            }
+
+            if (rot.Value.value.z > 0)
+            {
+                rb.Angular.z = math.clamp(rot.Value.value.z * mult, baseSpd, maxSpd);
+            }
+
+            else if (rot.Value.value.z < 0)
+            {
+                rb.Angular.z = math.clamp(rot.Value.value.z * mult, -baseSpd, -maxSpd);
+            }
+
+            else
+            {
+                rb.Angular.z = 0;
+            }
+
+            //rot.Value.value = new float4(0, 0, 0, rot.Value.value.w);
         });
     }
 
