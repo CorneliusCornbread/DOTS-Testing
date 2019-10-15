@@ -5,20 +5,20 @@ using Unity.Physics;
 using Unity.Transforms;
 using Unity.Mathematics;
 using UnityEngine;
+using Unity.Physics.Extensions;
 
-public class PhysicsControllerSystem : ComponentSystem
+public class PhysicsControllerSystem : JobComponentSystem
 {
     [BurstCompile]
-    public struct MoveJob : IJobForEach<PhysicsVelocity, InputStruct, PhysicsControllerStruct, LocalToWorld, RotationEulerXYZ>
+    public struct MoveJob : IJobForEach<PhysicsVelocity, InputStruct, PhysicsControllerStruct, LocalToWorld, Rotation, Translation>
     {
         public float deltaTime;
 
-        public void Execute(ref PhysicsVelocity rb, ref InputStruct input, ref PhysicsControllerStruct playerData, ref LocalToWorld toWorld, ref RotationEulerXYZ rot)
+        public void Execute(ref PhysicsVelocity rb, ref InputStruct input, ref PhysicsControllerStruct playerData, ref LocalToWorld toWorld, ref Rotation rot, ref Translation trans)
         {
             float3 targetVelocity = new float3();
             float speed = 1000;
             float gravity = 1;
-            float mass = 1;
 
             float maxVelocityChange = 10;
 
@@ -26,7 +26,6 @@ public class PhysicsControllerSystem : ComponentSystem
             targetVelocity.x = -input.vertical;
 
             //Debug.Log(rot.Value.value.w);
-
 
             // Calculate how fast we should be moving
             //targetVelocity = transform.TransformDirection(targetVelocity); //change from local space to world space
@@ -38,11 +37,9 @@ public class PhysicsControllerSystem : ComponentSystem
             float3 velocityChange = (targetVelocity - velocity);
             velocityChange.x = math.clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
             velocityChange.z = math.clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
-            velocityChange.y = -gravity * mass; //If we are't wall running or climbing a ladder apply gravity to the player
+            velocityChange.y = -gravity; //If we are't wall running or climbing a ladder apply gravity to the player
 
             rb.Linear += velocityChange;
-
-            rot.Value = new float3(0, 0, 0);
             /*
             float baseSpd = 2;
             float maxSpd = 4;
@@ -98,7 +95,7 @@ public class PhysicsControllerSystem : ComponentSystem
         }
     }
 
-    
+    /*
     [BurstCompile]
     protected override void OnUpdate()
     {
@@ -133,7 +130,7 @@ public class PhysicsControllerSystem : ComponentSystem
 
             rot.Value = new float3(0, 0, 0);
         });
-    }
+    }*/
 
     [BurstCompile]
     public static float3 Rotate(float4x4 a, float3 b)
@@ -141,7 +138,7 @@ public class PhysicsControllerSystem : ComponentSystem
         return (a.c0 * b.x + a.c1 * b.y + a.c2 * b.z).xyz;
     }
 
-    /*
+    
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
         MoveJob job = new MoveJob
@@ -149,5 +146,5 @@ public class PhysicsControllerSystem : ComponentSystem
             deltaTime = Time.deltaTime
         };
         return job.Schedule(this, inputDeps);
-    }*/
+    }
 }

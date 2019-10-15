@@ -1,6 +1,6 @@
-﻿using Unity.Transforms;
-using Unity.Entities;
+﻿using Unity.Entities;
 using UnityEngine;
+using Unity.Mathematics;
 
 public class PhysicsControllerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 {
@@ -8,6 +8,5 @@ public class PhysicsControllerAuthoring : MonoBehaviour, IConvertGameObjectToEnt
     {
         dstManager.AddComponentData(entity, new InputStruct());
         dstManager.AddComponentData(entity, new PhysicsControllerStruct());
-        dstManager.AddComponentData(entity, new RotationEulerXYZ());
     }
 }
