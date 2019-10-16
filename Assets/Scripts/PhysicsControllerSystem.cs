@@ -2,20 +2,69 @@
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Physics;
+using Unity.Physics.Extensions;
 using Unity.Transforms;
 using Unity.Mathematics;
 using UnityEngine;
-using Unity.Physics.Extensions;
+using Unity.Collections;
 
 public class PhysicsControllerSystem : JobComponentSystem
 {
-    [BurstCompile]
-    public struct MoveJob : IJobForEach<PhysicsVelocity, InputStruct, PhysicsControllerStruct, LocalToWorld, Rotation, Translation>
+    private EntityQuery q;
+
+    //[BurstCompile]
+    public struct MoveJob : IJobChunk
     {
         public float deltaTime;
+        public ArchetypeChunkComponentType<PhysicsVelocity> physVType;
+        public ArchetypeChunkComponentType<InputStruct> inputType;
+        public ArchetypeChunkComponentType<PhysicsControllerStruct> pControlType;
+        public ArchetypeChunkComponentType<LocalToWorld> toWorldType;
+        public ArchetypeChunkComponentType<Rotation> rotType;
+        public ArchetypeChunkComponentType<Translation> transType;
 
-        public void Execute(ref PhysicsVelocity rb, ref InputStruct input, ref PhysicsControllerStruct playerData, ref LocalToWorld toWorld, ref Rotation rot, ref Translation trans)
+        public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
         {
+            try
+            {
+                NativeArray<PhysicsVelocity> physVel = chunk.GetNativeArray(physVType);
+                NativeArray<InputStruct> inputStructs = chunk.GetNativeArray(inputType);
+                NativeArray<PhysicsControllerStruct> controllers = chunk.GetNativeArray(pControlType);
+                NativeArray<LocalToWorld> toWorlds = chunk.GetNativeArray(toWorldType);
+                NativeArray<Rotation> rotations = chunk.GetNativeArray(rotType);
+                NativeArray<Translation> translations = chunk.GetNativeArray(transType);
+
+                for (int i = 0; i < chunk.Count; i++)
+                {
+                    //physVel[i] = new PhysicsVelocity();
+                    //inputStructs[i] = new InputStruct();
+                    //controllers[i] = new PhysicsControllerStruct();
+                    //toWorlds[i] = new LocalToWorld();
+                    //rotations[i] = new Rotation();
+                    //translations[i] = new Translation();
+
+                    PhysicsVelocity rb = physVel[i];
+                    InputStruct inp = inputStructs[i];
+                    PhysicsControllerStruct controllerStruct = controllers[i];
+                    LocalToWorld toWorld = toWorlds[i];
+                    //Rotation rot = rotations[i];
+                    //Translation trans = translations[i];
+
+
+                    Execute(ref rb, ref inp, ref controllerStruct, ref toWorld);
+                }
+            }
+            catch (System.Exception e)
+            {
+
+                Debug.LogError(e);
+            }
+        }
+
+        public void Execute(ref PhysicsVelocity rb, ref InputStruct input, ref PhysicsControllerStruct playerData, ref LocalToWorld toWorld)
+        {
+            Debug.Log("execute");
+
             float3 targetVelocity = new float3();
             float speed = 1000;
             float gravity = 1;
@@ -23,7 +72,7 @@ public class PhysicsControllerSystem : JobComponentSystem
             float maxVelocityChange = 10;
 
             targetVelocity.z = input.horizontal;
-            targetVelocity.x = -input.vertical;
+            targetVelocity.x = -input.vertical;            
 
             //Debug.Log(rot.Value.value.w);
 
@@ -40,58 +89,7 @@ public class PhysicsControllerSystem : JobComponentSystem
             velocityChange.y = -gravity; //If we are't wall running or climbing a ladder apply gravity to the player
 
             rb.Linear += velocityChange;
-            /*
-            float baseSpd = 2;
-            float maxSpd = 4;
-            float mult = 5;
-
-            if (rot.Value.value.x > 0)
-            {
-                rb.Angular.x = math.clamp(rot.Value.value.x * mult, baseSpd, maxSpd);
-            }
-
-            else if (rot.Value.value.x < 0)
-            {
-                rb.Angular.x = rb.Angular.x = math.clamp(rot.Value.value.x * mult, -baseSpd, -maxSpd);
-            }
-
-            else
-            {
-                rb.Angular.x = 0;
-            }
-
-            if (rot.Value.value.y > 0)
-            {
-                rb.Angular.y = math.clamp(rot.Value.value.y * mult, baseSpd, maxSpd);
-            }
-
-            else if (rot.Value.value.y < 0)
-            {
-                rb.Angular.y = math.clamp(rot.Value.value.y * mult, -baseSpd, -maxSpd);
-            }
-
-            else
-            {
-                rb.Angular.y = 0;
-            }
-
-            if (rot.Value.value.z > 0)
-            {
-                rb.Angular.z = math.clamp(rot.Value.value.z * mult, baseSpd, maxSpd);
-            }
-
-            else if (rot.Value.value.z < 0)
-            {
-                rb.Angular.z = math.clamp(rot.Value.value.z * mult, -baseSpd, -maxSpd);
-            }
-
-            else
-            {
-                rb.Angular.z = 0;
-            }
-            */
-
-            //rot.Value.value = new float4(0, 0, 0, rot.Value.value.w);
+            Debug.Log("execute end");
         }
     }
 
@@ -138,13 +136,33 @@ public class PhysicsControllerSystem : JobComponentSystem
         return (a.c0 * b.x + a.c1 * b.y + a.c2 * b.z).xyz;
     }
 
-    
+
+    protected override void OnCreate()
+    {
+        q = GetEntityQuery
+            (
+            typeof(PhysicsVelocity),
+            typeof(InputStruct),
+            typeof(PhysicsControllerStruct),
+            typeof(LocalToWorld),
+            typeof(Rotation),
+            typeof(Translation)
+            );
+    }
+
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
         MoveJob job = new MoveJob
         {
-            deltaTime = Time.deltaTime
+            deltaTime = Time.deltaTime,
+            physVType = GetArchetypeChunkComponentType<PhysicsVelocity>(),
+            inputType = GetArchetypeChunkComponentType<InputStruct>(),
+            pControlType = GetArchetypeChunkComponentType<PhysicsControllerStruct>(),
+            toWorldType = GetArchetypeChunkComponentType<LocalToWorld>(),
+            rotType = GetArchetypeChunkComponentType<Rotation>(),
+            transType = GetArchetypeChunkComponentType<Translation>()
         };
-        return job.Schedule(this, inputDeps);
+
+        return job.Schedule(q, inputDeps);
     }
 }
