@@ -12,7 +12,6 @@ public class PhysicsControllerSystem : JobComponentSystem
 {
     private EntityQuery q;
 
-    [BurstCompile]
     public struct MoveJob : IJobChunk
     {
         public float deltaTime;
@@ -23,6 +22,7 @@ public class PhysicsControllerSystem : JobComponentSystem
         public ArchetypeChunkComponentType<Rotation> rotType;
         public ArchetypeChunkComponentType<Translation> transType;
 
+        [BurstCompile]
         public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
         {
             //Get arrays of objects that we'll be operating on
@@ -57,6 +57,7 @@ public class PhysicsControllerSystem : JobComponentSystem
             }
         }
 
+        [BurstCompile]
         public void Move(ref PhysicsVelocity rb, ref InputStruct input, ref PhysicsControllerStruct playerData, ref LocalToWorld toWorld, ref Rotation rot, ref Translation trans)
         {
             float3 targetVelocity = new float3();
@@ -66,8 +67,8 @@ public class PhysicsControllerSystem : JobComponentSystem
             float maxVelocityChange = 10;
 
             //Set target to input velocity
-            targetVelocity.z = input.horizontal;
-            targetVelocity.x = -input.vertical;            
+            targetVelocity.x = input.horizontal;
+            targetVelocity.z = input.vertical;            
 
             //Calculate how fast we should be moving
             targetVelocity = TransformDirection(toWorld.Value, targetVelocity); //Change from local space to world space

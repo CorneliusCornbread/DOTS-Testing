@@ -1,6 +1,7 @@
 ﻿using Unity.Entities;
 using UnityEngine;
 using Unity.Mathematics;
+using Unity.Physics;
 
 public class PhysicsControllerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 {
@@ -8,5 +9,6 @@ public class PhysicsControllerAuthoring : MonoBehaviour, IConvertGameObjectToEnt
     {
         dstManager.AddComponentData(entity, new InputStruct());
         dstManager.AddComponentData(entity, new PhysicsControllerStruct());
+        
     }
 }
