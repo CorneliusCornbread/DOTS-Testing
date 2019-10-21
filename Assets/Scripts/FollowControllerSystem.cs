@@ -4,7 +4,9 @@ using Unity.Jobs;
 using Unity.Transforms;
 using Unity.Physics;
 using Unity.Mathematics;
+using Unity.Physics.Systems;
 
+[UpdateAfter(typeof(EndFramePhysicsSystem)), UpdateBefore(typeof(TransformSystemGroup))]
 public class FollowControllerSystem : ComponentSystem
 {
     protected override void OnUpdate()
@@ -25,6 +27,7 @@ public class FollowControllerSystem : ComponentSystem
 
 
             camTransform.Value = targetPos;
+            camTransform.Value.y += .5f;
             camRot.Value.value.x = targetRot.x;
             camRot.Value.value.y = targetRot.y;
             camRot.Value.value.z = targetRot.z;

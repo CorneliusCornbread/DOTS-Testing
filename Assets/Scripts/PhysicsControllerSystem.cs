@@ -7,6 +7,7 @@ using Unity.Transforms;
 using Unity.Mathematics;
 using UnityEngine;
 using Unity.Collections;
+using Unity.Physics.Systems;
 
 public class PhysicsControllerSystem : JobComponentSystem
 {
@@ -16,6 +17,7 @@ public class PhysicsControllerSystem : JobComponentSystem
     {
         public float deltaTime;
         public ArchetypeChunkComponentType<PhysicsVelocity> physVType;
+        public ArchetypeChunkComponentType<PhysicsMass> physMassType;
         public ArchetypeChunkComponentType<InputStruct> inputType;
         public ArchetypeChunkComponentType<PhysicsControllerStruct> pControlType;
         public ArchetypeChunkComponentType<LocalToWorld> toWorldType;
@@ -27,6 +29,7 @@ public class PhysicsControllerSystem : JobComponentSystem
         {
             //Get arrays of objects that we'll be operating on
             NativeArray<PhysicsVelocity> physVel = chunk.GetNativeArray(physVType);
+            NativeArray<PhysicsMass> physMass = chunk.GetNativeArray(physMassType);
             NativeArray<InputStruct> inputStructs = chunk.GetNativeArray(inputType);
             NativeArray<PhysicsControllerStruct> controllers = chunk.GetNativeArray(pControlType);
             NativeArray<LocalToWorld> toWorlds = chunk.GetNativeArray(toWorldType);
@@ -38,6 +41,7 @@ public class PhysicsControllerSystem : JobComponentSystem
             {
                 //Get data from arrays
                 PhysicsVelocity rb = physVel[i];
+                PhysicsMass pMass = physMass[i];
                 InputStruct inp = inputStructs[i];
                 PhysicsControllerStruct controllerStruct = controllers[i];
                 LocalToWorld toWorld = toWorlds[i];
@@ -45,10 +49,11 @@ public class PhysicsControllerSystem : JobComponentSystem
                 Translation trans = translations[i];
 
                 //Do work on data
-                Move(ref rb, ref inp, ref controllerStruct, ref toWorld, ref rot, ref trans);
+                Move(ref rb, ref pMass, ref inp, ref controllerStruct, ref toWorld, ref rot, ref trans);
 
                 //Set data in array to data we changed
                 physVel[i] = rb;
+                physMass[i] = pMass;
                 inputStructs[i] = inp;
                 controllers[i] = controllerStruct;
                 toWorlds[i] = toWorld;
@@ -58,7 +63,7 @@ public class PhysicsControllerSystem : JobComponentSystem
         }
 
         [BurstCompile]
-        public void Move(ref PhysicsVelocity rb, ref InputStruct input, ref PhysicsControllerStruct playerData, ref LocalToWorld toWorld, ref Rotation rot, ref Translation trans)
+        public void Move(ref PhysicsVelocity rb, ref PhysicsMass mass, ref InputStruct input, ref PhysicsControllerStruct playerData, ref LocalToWorld toWorld, ref Rotation rot, ref Translation trans)
         {
             float3 targetVelocity = new float3();
             float speed = 1000;
@@ -84,6 +89,9 @@ public class PhysicsControllerSystem : JobComponentSystem
             //Mouse movement
             rb.Angular.y = input.mouseX * deltaTime * 100;
 
+            mass.InverseInertia[0] = 0;
+            mass.InverseInertia[2] = 0;
+
             rb.Linear += velocityChange;
         }
     }
@@ -99,6 +107,7 @@ public class PhysicsControllerSystem : JobComponentSystem
         q = GetEntityQuery
             (
             typeof(PhysicsVelocity),
+            typeof(PhysicsMass),
             typeof(InputStruct),
             typeof(PhysicsControllerStruct),
             typeof(LocalToWorld),
@@ -114,6 +123,7 @@ public class PhysicsControllerSystem : JobComponentSystem
         {
             deltaTime = Time.deltaTime,
             physVType = GetArchetypeChunkComponentType<PhysicsVelocity>(),
+            physMassType = GetArchetypeChunkComponentType<PhysicsMass>(),
             inputType = GetArchetypeChunkComponentType<InputStruct>(),
             pControlType = GetArchetypeChunkComponentType<PhysicsControllerStruct>(),
             toWorldType = GetArchetypeChunkComponentType<LocalToWorld>(),
