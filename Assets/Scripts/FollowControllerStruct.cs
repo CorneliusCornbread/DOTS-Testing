@@ -5,4 +5,5 @@ using Unity.Jobs;
 public struct FollowControllerStruct : IComponentData
 {
     public uint assignedPlayer;
+    public float verticalRot;
 }

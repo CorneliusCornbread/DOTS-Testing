@@ -9,6 +9,7 @@ using Unity.Physics.Systems;
 [UpdateAfter(typeof(EndFramePhysicsSystem)), UpdateBefore(typeof(TransformSystemGroup))]
 public class FollowControllerSystem : ComponentSystem
 {
+
     protected override void OnUpdate()
     {
         Entities.ForEach((ref FollowControllerStruct camInfo, ref Translation camTransform, ref Rotation camRot) => 
@@ -28,10 +29,12 @@ public class FollowControllerSystem : ComponentSystem
 
             camTransform.Value = targetPos;
             camTransform.Value.y += .5f;
-            camRot.Value.value.x = targetRot.x;
-            camRot.Value.value.y = targetRot.y;
-            camRot.Value.value.z = targetRot.z;
-            camRot.Value.value.w = targetRot.w;
+
+            camInfo.verticalRot -= Input.GetAxis("Mouse Y") * 2f * Time.deltaTime;
+            camInfo.verticalRot = Mathf.Clamp(camInfo.verticalRot, -90, 90); //Clamps the camera so you can't turn into an owl and look all the way up and behind you
+            camRot.Value.value = targetRot;
+
+            camRot.Value.value.y = camInfo.verticalRot;
         });
     }
 }
