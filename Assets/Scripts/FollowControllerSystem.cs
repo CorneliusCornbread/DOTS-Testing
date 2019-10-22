@@ -17,24 +17,22 @@ public class FollowControllerSystem : ComponentSystem
             Debug.Log("Start");
 
             float3 targetPos = new float3();
-            float4 targetRot = new float4();
+            float4 targetRot = camRot.Value.value;
 
             Entities.ForEach((ref PhysicsControllerStruct playerInfo, ref Translation playerTransform, ref Rotation playerRot) =>
             {
                 Debug.Log("Start2");
                 targetPos = playerTransform.Value;
-                targetRot = playerRot.Value.value;
+                targetRot.y = playerRot.Value.value.y;
             });
 
-
+            targetPos.y += .5f;
             camTransform.Value = targetPos;
-            camTransform.Value.y += .5f;
 
-            camInfo.verticalRot -= Input.GetAxis("Mouse Y") * 2f * Time.deltaTime;
+            camInfo.verticalRot -= Input.GetAxis("Mouse Y") * 30f * Time.deltaTime;
             camInfo.verticalRot = Mathf.Clamp(camInfo.verticalRot, -90, 90); //Clamps the camera so you can't turn into an owl and look all the way up and behind you
-            camRot.Value.value = targetRot;
 
-            camRot.Value.value.y = camInfo.verticalRot;
+            camRot.Value.value = targetRot;
         });
     }
 }
