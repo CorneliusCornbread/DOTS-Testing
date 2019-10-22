@@ -26,15 +26,15 @@ public class FollowControllerSystem : ComponentSystem
                 targetRot = playerRot.Value.value;
             });
 
-
             camTransform.Value = targetPos;
-            camTransform.Value.y += .5f;
 
             camInfo.verticalRot -= Input.GetAxis("Mouse Y") * 2f * Time.deltaTime;
             camInfo.verticalRot = Mathf.Clamp(camInfo.verticalRot, -90, 90); //Clamps the camera so you can't turn into an owl and look all the way up and behind you
             camRot.Value.value = targetRot;
 
-            camRot.Value.value.y = camInfo.verticalRot;
+            camRot.Value.value = targetRot;
+
+            //camRot.Value.value.y = camInfo.verticalRot;
         });
     }
 }
