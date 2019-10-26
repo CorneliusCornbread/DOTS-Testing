@@ -155,7 +155,7 @@ MonoBehaviour:
   _SceneAsset: {fileID: 102900000, guid: f474f973d0d11424cb9d226f3b2d1905, type: 3}
   _HierarchyColor: {r: 0.6886792, g: 0.10720008, b: 0.10720008, a: 1}
   AutoLoadScene: 1
-  m_SubSceneHeader: {fileID: 11400000, guid: d9f62e89a98dcfb41aeb58d452d80e3d, type: 2}
+  m_SubSceneHeader: {fileID: 11400000, guid: b4a0b5f03b4f1a04eac85622b20fdef3, type: 2}
 --- !u!4 &433396904
 Transform:
   m_ObjectHideFlags: 0
@@ -411,13 +411,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1874348994}
-  m_LocalRotation: {x: 0.27902484, y: -0.64925194, z: 0.27857575, w: 0.65039426}
+  m_LocalRotation: {x: 0.2788029, y: -0.64982224, z: 0.2788029, w: 0.64982224}
   m_LocalPosition: {x: 38.912277, y: 31.915169, z: 39.993546}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 90, y: -90, z: 0}
+  m_LocalEulerAnglesHint: {x: 46.443, y: -90, z: 0}
 --- !u!114 &1874348998
 MonoBehaviour:
   m_ObjectHideFlags: 0

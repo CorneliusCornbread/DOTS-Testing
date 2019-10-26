@@ -9,6 +9,7 @@ using UnityEngine;
 using Unity.Collections;
 using Unity.Physics.Systems;
 
+[BurstCompile]
 public class PhysicsControllerSystem : JobComponentSystem
 {
     private EntityQuery q;
@@ -23,8 +24,7 @@ public class PhysicsControllerSystem : JobComponentSystem
         public ArchetypeChunkComponentType<LocalToWorld> toWorldType;
         public ArchetypeChunkComponentType<Rotation> rotType;
         public ArchetypeChunkComponentType<Translation> transType;
-
-        [BurstCompile]
+        
         public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
         {
             //Get arrays of objects that we'll be operating on
@@ -62,7 +62,6 @@ public class PhysicsControllerSystem : JobComponentSystem
             }
         }
 
-        [BurstCompile]
         public void Move(ref PhysicsVelocity rb, ref PhysicsMass mass, ref InputStruct input, ref PhysicsControllerStruct playerData, ref LocalToWorld toWorld, ref Rotation rot, ref Translation trans)
         {
             float3 targetVelocity = new float3();
@@ -95,13 +94,12 @@ public class PhysicsControllerSystem : JobComponentSystem
             rb.Linear += velocityChange;
         }
     }
-
-    [BurstCompile]
+    
     public static float3 TransformDirection(float4x4 a, float3 b)
     {
         return (a.c0 * b.x + a.c1 * b.y + a.c2 * b.z).xyz;
     }
-
+    
     protected override void OnCreate()
     {
         q = GetEntityQuery
