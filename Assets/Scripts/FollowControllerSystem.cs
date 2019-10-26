@@ -11,6 +11,7 @@ using Unity.Physics.Systems;
 [BurstCompile]
 public class FollowControllerSystem : ComponentSystem
 {
+
     protected override void OnUpdate()
     {
         Entities.ForEach((ref FollowControllerStruct camInfo, ref Translation camTransform, ref Rotation camRot) => 
