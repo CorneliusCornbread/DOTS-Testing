@@ -86,7 +86,7 @@ public class PhysicsControllerSystem : JobComponentSystem
             velocityChange.y = -gravity; //If we are't wall running or climbing a ladder apply gravity to the player
 
             //Mouse movement
-            rb.Angular.y = -input.mouseX * deltaTime * 100;
+            rb.Angular.y = -input.mouseX * 2;// * deltaTime;
 
             mass.InverseInertia[0] = 0;
             mass.InverseInertia[2] = 0;
