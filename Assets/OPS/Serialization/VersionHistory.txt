@@ -1,0 +1,26 @@
+1.5.1
+- Change: Maximal String length is now set too: 65535 (uint max value)! Old length was: 1073741824. 
+  The problem: Too much memory got allocated for the strings. You can change the length in: OPS.Serialization.Byte ByteReader and ByteWriter.
+- Improvement: Improved some exception messages.
+
+1.5
+- Add: Dictionary Serialization
+
+1.4
+- To allow better serialization customization and because of multiple questions, you have
+  now directly access to the source code.
+
+1.3
+- Added Async serialization/deserialization
+
+1.2.1
+- Struct support
+
+1.2
+- Multidimensional arrays are now serializable!
+[Important! Because of the added multidimensionality, serialized arrays from prior versions than 1.2 are not compatible with 1.2 or later!]
+- Added serialization of 2D and 3D Colliders.
+[Note! Shared components of colliders like rigidybody or sharedmesh wont be serialized!]
+
+1.1
+First upload to Unity Asset Store

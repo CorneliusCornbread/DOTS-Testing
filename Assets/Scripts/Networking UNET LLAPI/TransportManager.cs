@@ -1,5 +1,20 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
+using OPS.Serialization.IO;
+using OPS.Serialization.Attributes;
+
+[SerializeAbleClass]
+public class Location
+{
+    [SerializeAbleField(0)]
+    public float x;
+
+    [SerializeAbleField(1)]
+    public float y;
+
+    [SerializeAbleField(2)]
+    public float z;
+}
 
 public class TransportManager : MonoBehaviour
 {
@@ -28,19 +43,66 @@ public class TransportManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
+                Debug.Log("Server started");
                 Host();
             }
 
             else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
+                Debug.Log("Client started");
                 TryConnect();
             }
         }
 
         else
         {
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                Debug.Log("message sent");
+                SendStuff();
+            }
+
+            else if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                Debug.Log("Disconnecting");
+                DisconnectClient1();
+            }
+
             HandleRecieve();
         }
+    }
+
+    void SendStuff()
+    {
+        if (!IsStarted)
+            return;
+
+        Location loc = new Location()
+        {
+            x = transform.position.x,
+            y = transform.position.y,
+            z = transform.position.z
+        };
+
+        byte[] data = Serializer.Serialize(loc);
+        byte[] msg = new byte[data.Length];
+        Serializer.DeSerialize()
+
+        NetworkTransport.Send(0, ConnectionID, ReliableChannel, data, data.Length, out byte error);
+        NetworkError e = (NetworkError)error;
+
+        Debug.Log("Message: " + e);
+    }
+
+    void DisconnectClient1()
+    {
+        if (!IsServer)
+            return;
+
+        //Change connectionID to change which player is disconnected, starts 1 one for the first player that is connected
+        NetworkTransport.Disconnect(0, 2, out byte error); //Disconnects the first player that connects
+
+        Debug.Log("Disconnected: " + (NetworkError)error);
     }
 
     #region Basic Network Functions
@@ -53,12 +115,21 @@ public class TransportManager : MonoBehaviour
         byte[] data = new byte[maxSize];
 
         NetworkEventType type = NetworkTransport.Receive(out int recHostID, out int conID, out int channelID, data, maxSize, out int size, out byte error);
+        //Host id 65534 is self (least for server)
+
+        if (IsServer && recHostID != 65534)
+            Debug.Log("ConID: " + conID + " hostID: " + recHostID);
+
+        //Data is the byte array we recieve from the server
+        //Size is the size of the array before it was sent
 
         if (IsServer)
         {
             switch (type)
             {
                 case NetworkEventType.DataEvent:
+                    Debug.Log("recieved data");
+                    
 
                     break;
 
@@ -84,15 +155,35 @@ public class TransportManager : MonoBehaviour
             switch (type)
             {
                 case NetworkEventType.DataEvent:
+                    Debug.Log("recieved data");
+                    
 
                     break;
 
                 case NetworkEventType.ConnectEvent:
-                    Debug.Log("We've connected");
+                    if (conID == ConnectionID)
+                    {
+                        Debug.Log("Connection successful");
+                    }
+
+                    else
+                    {
+                        Debug.LogError("Recieved a connection event from non server sender");
+                    }
+
                     break;
 
                 case NetworkEventType.DisconnectEvent:
-                    Debug.Log("We've been disconnected");
+                    if (conID == ConnectionID)
+                    {
+                        Debug.Log("Disconnected");
+                    }
+
+                    else
+                    {
+                        Debug.LogError("Recieved a disconnect event from non server sender");
+                    }
+
                     break;
 
                 case NetworkEventType.Nothing:

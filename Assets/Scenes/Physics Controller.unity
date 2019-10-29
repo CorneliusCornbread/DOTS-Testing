@@ -155,7 +155,7 @@ MonoBehaviour:
   _SceneAsset: {fileID: 102900000, guid: f474f973d0d11424cb9d226f3b2d1905, type: 3}
   _HierarchyColor: {r: 0.6886792, g: 0.10720008, b: 0.10720008, a: 1}
   AutoLoadScene: 1
-  m_SubSceneHeader: {fileID: 11400000, guid: b4a0b5f03b4f1a04eac85622b20fdef3, type: 2}
+  m_SubSceneHeader: {fileID: 11400000, guid: d9f62e89a98dcfb41aeb58d452d80e3d, type: 2}
 --- !u!4 &433396904
 Transform:
   m_ObjectHideFlags: 0
@@ -179,6 +179,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 989028622}
+  - component: {fileID: 989028621}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -186,6 +187,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &989028621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 989028620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 516a6e78e17890846830e664cf145dcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &989028622
 Transform:
   m_ObjectHideFlags: 0
