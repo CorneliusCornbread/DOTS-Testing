@@ -13,12 +13,96 @@ public class TransportManager : MonoBehaviour
     public static bool IsServer { get; private set; } = false;
 
     public const int maxConnections = 100;
+    public const int maxSize = 1024;
 
     public const string loopback = "127.0.0.1";
 
     void Start()
     {
-        //Host(24545);
+        DontDestroyOnLoad(gameObject);
+    }
+
+    void Update()
+    {
+        if (!IsStarted)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                Host();
+            }
+
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                TryConnect();
+            }
+        }
+
+        else
+        {
+            HandleRecieve();
+        }
+    }
+
+    #region Basic Network Functions
+    private static void HandleRecieve()
+    {
+        //HostID: Standalone, web, etc
+        //ConID: Sender's id
+        //ChannelID: Channel message is recieved on
+
+        byte[] data = new byte[maxSize];
+
+        NetworkEventType type = NetworkTransport.Receive(out int recHostID, out int conID, out int channelID, data, maxSize, out int size, out byte error);
+
+        if (IsServer)
+        {
+            switch (type)
+            {
+                case NetworkEventType.DataEvent:
+
+                    break;
+
+                case NetworkEventType.ConnectEvent:
+                    Debug.Log("User " + conID + " has connected");
+                    break;
+
+                case NetworkEventType.DisconnectEvent:
+                    Debug.Log("User " + conID + " has disconnected");
+                    break;
+
+                case NetworkEventType.Nothing:
+                    break;
+
+                default:
+                    Debug.LogError("Unhandled event type: " + type);
+                    break;
+            }
+        }
+
+        else
+        {
+            switch (type)
+            {
+                case NetworkEventType.DataEvent:
+
+                    break;
+
+                case NetworkEventType.ConnectEvent:
+                    Debug.Log("We've connected");
+                    break;
+
+                case NetworkEventType.DisconnectEvent:
+                    Debug.Log("We've been disconnected");
+                    break;
+
+                case NetworkEventType.Nothing:
+                    break;
+
+                default:
+                    Debug.LogError("Unhandled event type: " + type);
+                    break;
+            }
+        }
     }
 
     /// <summary>
@@ -27,14 +111,18 @@ public class TransportManager : MonoBehaviour
     /// <param name="topology">Topolgy created by function</param>
     private static HostTopology Init()
     {
+
         GlobalConfig gConfig = new GlobalConfig
         {
-            //MaxPacketSize = 1024
+            MaxPacketSize = maxSize
         };
 
         NetworkTransport.Init(gConfig);
 
-        ConnectionConfig config = new ConnectionConfig();
+        ConnectionConfig config = new ConnectionConfig
+        {
+            PacketSize = maxSize
+        };
 
         ReliableChannel = config.AddChannel(QosType.Reliable);
         UnreliableChannel = config.AddChannel(QosType.Reliable);
@@ -55,10 +143,15 @@ public class TransportManager : MonoBehaviour
             throw new System.Exception("Cannot use a negative or zero integer as a port");
         }
 
+        else if (IsStarted)
+        {
+            throw new System.Exception("Cannot connect whilst we are already connected");
+        }
+
         HostTopology topology = Init();
 
         HostID = NetworkTransport.AddHost(topology, inPort); //Host ID will start at 0 if there are no other hosts
-        WebHostID = NetworkTransport.AddWebsocketHost(topology, inPort); //Starts at 65534
+        WebHostID = NetworkTransport.AddWebsocketHost(topology, inPort + 1); //Starts at 65534
 
         Port = inPort;
 
@@ -79,9 +172,15 @@ public class TransportManager : MonoBehaviour
             return NetworkError.UsageError;
         }
 
-        //HostTopology topology = Init();
+        else if (IsStarted)
+        {
+            Debug.LogError("Cannot connect whilst we are already connected");
+            return NetworkError.UsageError;
+        }
 
-        Init();
+        HostTopology topology = Init();
+
+        NetworkTransport.AddHost(topology, 0);
 
         ConnectionID = NetworkTransport.Connect(0, ip, inPort, 0, out byte error);
         NetworkError netError = (NetworkError)error;
@@ -120,6 +219,7 @@ public class TransportManager : MonoBehaviour
             ResetVals();
         }
     }
+    #endregion
 
     private static void ResetVals()
     {
