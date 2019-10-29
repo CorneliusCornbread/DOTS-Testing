@@ -26,6 +26,7 @@ public class TransportManager : MonoBehaviour
     public static int Port { get; private set; } = 0;
     public static bool IsStarted { get; private set; } = false;
     public static bool IsServer { get; private set; } = false;
+    public static int PlayerCount { get; private set; } = 0; //Server only
 
     public const int maxConnections = 100;
     public const int maxSize = 1024;
@@ -85,8 +86,14 @@ public class TransportManager : MonoBehaviour
         };
 
         byte[] data = Serializer.Serialize(loc);
-        byte[] msg = new byte[data.Length];
-        Serializer.DeSerialize()
+        Debug.Log("len1 " + data.Length);
+        byte[] msg = new byte[data.Length + 1];
+        Debug.Log("len2 " + msg.Length);
+        ArraySerializer a = new ArraySerializer();
+        data.CopyTo(msg, 0);
+
+        Debug.Log("len1 " + data.Length);
+        Debug.Log("len2 " + msg.Length);
 
         NetworkTransport.Send(0, ConnectionID, ReliableChannel, data, data.Length, out byte error);
         NetworkError e = (NetworkError)error;
@@ -135,10 +142,12 @@ public class TransportManager : MonoBehaviour
 
                 case NetworkEventType.ConnectEvent:
                     Debug.Log("User " + conID + " has connected");
+                    PlayerCount++;
                     break;
 
                 case NetworkEventType.DisconnectEvent:
                     Debug.Log("User " + conID + " has disconnected");
+                    PlayerCount--;
                     break;
 
                 case NetworkEventType.Nothing:
