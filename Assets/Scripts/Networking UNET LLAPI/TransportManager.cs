@@ -57,10 +57,12 @@ public class TransportManager : MonoBehaviour
 
         else
         {
+            HandleRecieve();
+
             if (Input.GetKeyDown(KeyCode.Alpha3))
             {
                 Debug.Log("Disconnecting");
-                add disconnect function here stupid
+                Disconnect();
             }
 
             else if (Input.GetKeyDown(KeyCode.Alpha4))
@@ -74,8 +76,6 @@ public class TransportManager : MonoBehaviour
                 Debug.Log("Disconnecting");
                 DisconnectClient1();
             }
-
-            HandleRecieve();
         }
     }
 
@@ -295,15 +295,14 @@ public class TransportManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Client: Disconnects client from server and shuts down /n
+    /// Client: Disconnects client from server and shuts down
     /// <para>Server: Shuts down the server</para>
     /// </summary>
     public static void Disconnect()
     {
         if (!IsStarted)
         {
-            Debug.LogError("Cannot shutdown if we haven't started");
-            return;
+            throw new System.Exception("Cannot disconnect when we haven't connected");
         }
 
         if (IsServer)
