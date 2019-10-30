@@ -59,11 +59,17 @@ public class TransportManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Alpha3))
             {
+                Debug.Log("Disconnecting");
+                add disconnect function here stupid
+            }
+
+            else if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
                 Debug.Log("message sent");
                 SendStuff();
             }
 
-            else if (Input.GetKeyDown(KeyCode.Alpha4))
+            else if (Input.GetKeyDown(KeyCode.Alpha5))
             {
                 Debug.Log("Disconnecting");
                 DisconnectClient1();
