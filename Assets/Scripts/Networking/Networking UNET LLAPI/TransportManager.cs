@@ -16,8 +16,20 @@ public class Location
     public float z;
 }
 
+/// <summary>
+/// Class that uses UNET LLAPI to move some objects around with hybrid ECS.
+/// The syncing of objects only works with a single object and server.
+/// Joining more than 1 client will cause it to bug out, this is intentional, I didn't want to bother fixing it.
+/// Only should be used as a "maybe could use hybrid ECS with the LLAPI like this"
+/// Definitely possible, but would be difficult to get working in hybrid.
+/// </summary>
 public class TransportManager : MonoBehaviour
 {
+    public Transform localPlayer;
+    public Transform serverPlayer;
+
+    public static TransportManager instance;
+
     public static byte ReliableChannel { get; private set; } = 0;
     public static byte UnreliableChannel { get; private set; } = 0;
     public static int HostID { get; private set; } = 0;
@@ -35,7 +47,9 @@ public class TransportManager : MonoBehaviour
 
     void Start()
     {
+        instance = this;
         DontDestroyOnLoad(gameObject);
+        InvokeRepeating("SendPos", 0, 1f/60f);
     }
 
     void Update()
@@ -67,41 +81,38 @@ public class TransportManager : MonoBehaviour
 
             else if (Input.GetKeyDown(KeyCode.Alpha4))
             {
-                Debug.Log("message sent");
-                SendStuff();
-            }
-
-            else if (Input.GetKeyDown(KeyCode.Alpha5))
-            {
                 Debug.Log("Disconnecting");
                 DisconnectClient1();
             }
         }
     }
 
-    void SendStuff()
+    void SendPos()
     {
         if (!IsStarted)
             return;
 
         Location loc = new Location()
         {
-            x = transform.position.x,
-            y = transform.position.y,
-            z = transform.position.z
+            x = localPlayer.position.x,
+            y = localPlayer.position.y - .5f,
+            z = localPlayer.position.z
         };
 
         byte[] data = Serializer.Serialize(loc);
-        Debug.Log("len1 " + data.Length);
-        byte[] msg = new byte[data.Length + 1];
-        Debug.Log("len2 " + msg.Length);
-        ArraySerializer a = new ArraySerializer();
-        data.CopyTo(msg, 0);
 
-        Debug.Log("len1 " + data.Length);
-        Debug.Log("len2 " + msg.Length);
+        byte error;
 
-        NetworkTransport.Send(0, ConnectionID, ReliableChannel, data, data.Length, out byte error);
+        if (!IsServer)
+        {
+            NetworkTransport.Send(0, ConnectionID, ReliableChannel, data, data.Length, out error);
+        }
+
+        else
+        {
+            NetworkTransport.Send(0, 1, ReliableChannel, data, data.Length, out error);
+        }
+
         NetworkError e = (NetworkError)error;
 
         Debug.Log("Message: " + e);
@@ -142,8 +153,9 @@ public class TransportManager : MonoBehaviour
             {
                 case NetworkEventType.DataEvent:
                     Debug.Log("recieved data");
-                    
-
+                    System.Array.Resize(ref data, size);
+                    Location l = Serializer.DeSerialize<Location>(data);
+                    instance.serverPlayer.position = new Vector3(l.x, l.y, l.z);
                     break;
 
                 case NetworkEventType.ConnectEvent:
@@ -171,8 +183,9 @@ public class TransportManager : MonoBehaviour
             {
                 case NetworkEventType.DataEvent:
                     Debug.Log("recieved data");
-                    
-
+                    System.Array.Resize(ref data, size);
+                    Location l = Serializer.DeSerialize<Location>(data);
+                    instance.serverPlayer.position = new Vector3(l.x, l.y, l.z);
                     break;
 
                 case NetworkEventType.ConnectEvent:
@@ -260,7 +273,6 @@ public class TransportManager : MonoBehaviour
         WebHostID = NetworkTransport.AddWebsocketHost(topology, inPort + 1); //Starts at 65534
 
         Port = inPort;
-
         IsServer = true;
     }
 
