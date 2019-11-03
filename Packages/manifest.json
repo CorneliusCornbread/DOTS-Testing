@@ -10,6 +10,7 @@
     "com.unity.ext.nunit": "1.0.0",
     "com.unity.ide.rider": "1.1.0",
     "com.unity.ide.vscode": "1.1.2",
+    "com.unity.inputsystem": "1.0.0-preview.1",
     "com.unity.physics": "0.2.4-preview",
     "com.unity.platforms": "0.1.5-preview",
     "com.unity.platforms.windows": "0.1.5-preview",

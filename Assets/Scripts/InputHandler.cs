@@ -10,16 +10,25 @@ public class InputHandler : ComponentSystem
     [BurstCompile]
     protected override void OnUpdate()
     {
+        if (MonoInputManager.instance == null)
+        {
+            Debug.LogWarning("Waiting for MonoInputManager");
+            return;
+        }
+
+        MonoInputManager inputMan = MonoInputManager.instance;
+
         Entities.ForEach((ref InputStruct input) =>
         {
-            input.horizontal = Input.GetAxis("Horizontal");
-            input.vertical = Input.GetAxis("Vertical");
-            input.alt = Input.GetAxis("Alt");
+            input.horizontal = inputMan.move.x;
+            input.vertical = inputMan.move.y;
 
-            input.mouseX = Input.GetAxis("Mouse X");
-            input.mouseY = Input.GetAxis("Mouse Y");
+            input.mouseX = inputMan.mouse.x;
+            input.mouseY = inputMan.mouse.y;
+            input.alt = inputMan.alt;
 
-            input.shift = Input.GetKey(KeyCode.LeftShift);
+            //input.shift = Input.GetKey(KeyCode.LeftShift);
+            input.jump = inputMan.jump;
         });
     }
 }

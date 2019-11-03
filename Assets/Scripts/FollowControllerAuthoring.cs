@@ -8,5 +8,6 @@ public class FollowControllerAuthoring : MonoBehaviour, IConvertGameObjectToEnti
     {
         dstManager.AddComponentData(entity, new FollowControllerStruct());
         dstManager.AddComponentData(entity, new RotationEulerXYZ());
+        dstManager.AddComponentData(entity, new InputStruct());
     }
 }

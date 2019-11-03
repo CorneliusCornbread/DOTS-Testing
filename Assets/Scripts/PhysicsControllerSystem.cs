@@ -86,7 +86,7 @@ public class PhysicsControllerSystem : JobComponentSystem
             velocityChange.y = -gravity; //If we are't wall running or climbing a ladder apply gravity to the player
 
             //Mouse movement
-            rb.Angular.y = -input.mouseX * 2;// * deltaTime;
+            rb.Angular.y = -input.mouseX * 2; //* deltaTime;
 
             mass.InverseInertia[0] = 0;
             mass.InverseInertia[2] = 0;
@@ -119,14 +119,14 @@ public class PhysicsControllerSystem : JobComponentSystem
         //Setup job
         MoveJob job = new MoveJob
         {
-            deltaTime = Time.deltaTime,
             physVType = GetArchetypeChunkComponentType<PhysicsVelocity>(),
             physMassType = GetArchetypeChunkComponentType<PhysicsMass>(),
             inputType = GetArchetypeChunkComponentType<InputStruct>(),
             pControlType = GetArchetypeChunkComponentType<PhysicsControllerStruct>(),
             toWorldType = GetArchetypeChunkComponentType<LocalToWorld>(),
             rotType = GetArchetypeChunkComponentType<Rotation>(),
-            transType = GetArchetypeChunkComponentType<Translation>()
+            transType = GetArchetypeChunkComponentType<Translation>(),
+            deltaTime = Time.deltaTime
         };
 
         return job.Schedule(q, inputDeps);

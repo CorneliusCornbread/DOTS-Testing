@@ -10,4 +10,5 @@ public struct InputStruct : IComponentData
     public float mouseY;
 
     public bool shift;
+    public bool jump;
 }
