@@ -9,7 +9,7 @@ using UnityEngine;
 using Unity.Collections;
 using Unity.Physics.Systems;
 
-[BurstCompile]
+//[BurstCompile]
 public class PhysicsControllerSystem : JobComponentSystem
 {
     private EntityQuery q;
@@ -24,7 +24,7 @@ public class PhysicsControllerSystem : JobComponentSystem
         public ArchetypeChunkComponentType<LocalToWorld> toWorldType;
         public ArchetypeChunkComponentType<Rotation> rotType;
         public ArchetypeChunkComponentType<Translation> transType;
-        
+
         public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
         {
             //Get arrays of objects that we'll be operating on
@@ -91,6 +91,25 @@ public class PhysicsControllerSystem : JobComponentSystem
             mass.InverseInertia[0] = 0;
             mass.InverseInertia[2] = 0;
 
+            float3 pos = trans.Value;
+            float3 target = pos;
+            target.y -= 2;
+
+            RaycastInput rInput = new RaycastInput()
+            {
+                Start = pos,
+                End = target,
+                Filter = new CollisionFilter()
+            };
+
+            BuildPhysicsWorld physWorld = World.Active.GetExistingSystem<BuildPhysicsWorld>();
+            CollisionWorld collisionWorld = physWorld.PhysicsWorld.CollisionWorld;
+
+            collisionWorld.CastRay(rInput, out Unity.Physics.RaycastHit hit);
+
+            Debug.Log(hit.ToString());
+
+
             rb.Linear += velocityChange;
         }
     }
@@ -110,7 +129,8 @@ public class PhysicsControllerSystem : JobComponentSystem
             typeof(PhysicsControllerStruct),
             typeof(LocalToWorld),
             typeof(Rotation),
-            typeof(Translation)
+            typeof(Translation),
+            typeof(PhysicsCollider)
             );
     }
 
