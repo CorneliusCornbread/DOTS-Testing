@@ -100,6 +100,11 @@ public class PhysicsControllerSystem : JobComponentSystem
                 Start = pos,
                 End = target,
                 Filter = new CollisionFilter()
+                {
+                    BelongsTo = 1,
+                    CollidesWith = 1,
+                    GroupIndex = 1
+                }
             };
 
             BuildPhysicsWorld physWorld = World.Active.GetExistingSystem<BuildPhysicsWorld>();
@@ -107,7 +112,7 @@ public class PhysicsControllerSystem : JobComponentSystem
 
             collisionWorld.CastRay(rInput, out Unity.Physics.RaycastHit hit);
 
-            Debug.Log(hit.ToString());
+            //Debug.Log(hit.ToString());
 
 
             rb.Linear += velocityChange;
