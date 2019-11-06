@@ -155,7 +155,7 @@ MonoBehaviour:
   _SceneAsset: {fileID: 102900000, guid: f474f973d0d11424cb9d226f3b2d1905, type: 3}
   _HierarchyColor: {r: 0.6886792, g: 0.10720008, b: 0.10720008, a: 1}
   AutoLoadScene: 1
-  m_SubSceneHeader: {fileID: 11400000, guid: b4a0b5f03b4f1a04eac85622b20fdef3, type: 2}
+  m_SubSceneHeader: {fileID: 11400000, guid: d9f62e89a98dcfb41aeb58d452d80e3d, type: 2}
 --- !u!4 &433396904
 Transform:
   m_ObjectHideFlags: 0
@@ -498,6 +498,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jump: 0
   move: {x: 0, y: 0}
+  mouse: {x: 0, y: 0}
+  alt: 0
 --- !u!4 &2014548470
 Transform:
   m_ObjectHideFlags: 0
