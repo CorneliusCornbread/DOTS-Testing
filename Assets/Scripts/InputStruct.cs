@@ -1,9 +1,11 @@
 ﻿using Unity.Entities;
+using Unity.Mathematics;
 
 public struct InputStruct : IComponentData
 {
-    public float horizontal;
-    public float vertical;
+    public float2 moveRaw;
+    public float2 move;
+
     public float alt;
 
     public float mouseX;

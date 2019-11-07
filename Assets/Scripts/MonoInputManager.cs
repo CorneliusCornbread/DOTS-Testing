@@ -17,6 +17,9 @@ public class MonoInputManager : MonoBehaviour
     [HideInInspector]
     public float alt;
 
+    [HideInInspector]
+    public Vector2 smoothedMove;
+
     private void OnEnable()
     {
         controls.Player.Enable();
@@ -48,7 +51,12 @@ public class MonoInputManager : MonoBehaviour
         controls.Player.Look.canceled += MouseClear;
 
         controls.Player.Alt.performed += Alt;
-        controls.Player.Alt.canceled += AltClear; ;
+        controls.Player.Alt.canceled += AltClear;
+    }
+
+    private void Update()
+    {
+        smoothedMove = Vector2.Lerp(smoothedMove, move, 10 * Time.deltaTime);
     }
 
     #region Callbacks

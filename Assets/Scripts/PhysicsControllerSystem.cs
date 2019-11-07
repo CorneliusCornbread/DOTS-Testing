@@ -9,6 +9,8 @@ using UnityEngine;
 using Unity.Collections;
 using Unity.Physics.Systems;
 
+
+/*
 //[BurstCompile]
 public class PhysicsControllerSystem : JobComponentSystem
 {
@@ -114,7 +116,6 @@ public class PhysicsControllerSystem : JobComponentSystem
 
             //Debug.Log(hit.ToString());
 
-
             rb.Linear += velocityChange;
         }
     }
@@ -155,5 +156,79 @@ public class PhysicsControllerSystem : JobComponentSystem
         };
 
         return job.Schedule(q, inputDeps);
+    }
+    
+}*/
+
+public class PhysicsControllerSystem : ComponentSystem
+{
+    protected override void OnUpdate()
+    {
+        float deltaTime = Time.deltaTime;
+
+        Entities.ForEach((ref PhysicsVelocity rb, ref PhysicsMass mass, ref InputStruct input, ref LocalToWorld toWorld, ref Rotation rot, ref Translation trans) =>
+        {
+            float3 targetVelocity = new float3();
+            float speed = 1000;
+            float gravity = 60;
+
+            //Set target to input velocity
+            targetVelocity.x = input.move.x;
+            targetVelocity.z = input.move.y;            
+
+            //Calculate how fast we should be moving
+            targetVelocity = TransformDirection(toWorld.Value, targetVelocity); //Change from local space to world space
+            targetVelocity *= speed * deltaTime;
+
+            //Apply a force that attempts to reach our target velocity
+            float3 velocityChange = (targetVelocity - rb.Linear);
+            velocityChange.y = -gravity * deltaTime; //If we are't wall running or climbing a ladder apply gravity to the player
+
+            //Mouse movement
+            rb.Angular.y = -input.mouseX * 2; //* deltaTime;
+
+            mass.InverseInertia[0] = 0;
+            mass.InverseInertia[2] = 0;
+
+            //Ground check
+            float3 pos = trans.Value;
+            float3 target = pos;
+            target.y -= 1;
+
+            RaycastInput rInput = new RaycastInput()
+            {
+                Start = pos,
+                End = target,
+                Filter = new CollisionFilter()
+                {
+                    BelongsTo = 1,
+                    CollidesWith = 2,
+                    GroupIndex = 1
+                }
+            };
+
+            BuildPhysicsWorld physWorld = World.Active.GetExistingSystem<BuildPhysicsWorld>();
+            CollisionWorld collisionWorld = physWorld.PhysicsWorld.CollisionWorld;
+
+            //Ground check raycast
+            bool onGround = collisionWorld.CastRay(rInput, out Unity.Physics.RaycastHit hit);
+            
+            //Debug and jump
+            if (onGround)
+            {
+                RigidBody r = physWorld.PhysicsWorld.Bodies[hit.RigidBodyIndex];
+                Debug.Log("Hit " + hit.RigidBodyIndex);
+
+                if (input.jump)
+                    rb.Linear.y = 13;
+            }
+
+            rb.Linear += velocityChange;
+        });
+    }
+
+    public static float3 TransformDirection(float4x4 a, float3 b)
+    {
+        return (a.c0 * b.x + a.c1 * b.y + a.c2 * b.z).xyz;
     }
 }

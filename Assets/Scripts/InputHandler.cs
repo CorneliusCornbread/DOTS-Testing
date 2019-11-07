@@ -20,8 +20,8 @@ public class InputHandler : ComponentSystem
 
         Entities.ForEach((ref InputStruct input) =>
         {
-            input.horizontal = inputMan.move.x;
-            input.vertical = inputMan.move.y;
+            input.moveRaw = inputMan.move;
+            input.move = inputMan.smoothedMove;
 
             input.mouseX = inputMan.mouse.x;
             input.mouseY = inputMan.mouse.y;
