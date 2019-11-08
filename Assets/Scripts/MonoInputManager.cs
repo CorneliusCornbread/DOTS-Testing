@@ -8,17 +8,18 @@ public class MonoInputManager : MonoBehaviour
     public static MonoInputManager instance;
     private PlayerControls controls;
 
-    [HideInInspector]
-    public bool jump = false;
-    [HideInInspector]
-    public Vector2 move;
-    [HideInInspector]
-    public Vector2 mouse;
-    [HideInInspector]
-    public float alt;
+    public bool jump { get; private set; } = false;
+    public Vector2 move { get; private set; }
+    public Vector2 mouse { get; private set; }
+    public float alt { get; private set; }
 
-    [HideInInspector]
-    public Vector2 smoothedMove;
+    public Vector2 smoothedMove { get; private set; }
+
+    public const float time = 0.08f;
+    public const float max = 10;
+
+    float velocX = 0;
+    float velocY = 0;
 
     private void OnEnable()
     {
@@ -56,7 +57,36 @@ public class MonoInputManager : MonoBehaviour
 
     private void Update()
     {
-        smoothedMove = Vector2.Lerp(smoothedMove, move, 10 * Time.deltaTime);
+        Vector2 m = smoothedMove;
+        float x;
+        float y;
+
+        float error = .03f;
+
+        if (Mathf.Abs(smoothedMove.x - move.x) < error)
+        {
+            x = move.x;
+        }
+
+        else
+        {
+            x = Mathf.SmoothDamp(smoothedMove.x, move.x, ref velocX, time, max, Time.deltaTime);
+        }
+
+        if (Mathf.Abs(smoothedMove.y - move.y) < error)
+        {
+            y = move.y;
+        }
+
+        else
+        {
+            y = Mathf.SmoothDamp(smoothedMove.y, move.y, ref velocY, time, max, Time.deltaTime);
+        }
+
+        m.x = x;
+        m.y = y;
+
+        smoothedMove = m;
     }
 
     #region Callbacks

@@ -1,6 +1,7 @@
 ﻿using Unity.Entities;
 using Unity.Mathematics;
 
+[System.Serializable]
 public struct InputStruct : IComponentData
 {
     public float2 moveRaw;

@@ -169,20 +169,20 @@ public class PhysicsControllerSystem : ComponentSystem
         Entities.ForEach((ref PhysicsVelocity rb, ref PhysicsMass mass, ref InputStruct input, ref LocalToWorld toWorld, ref Rotation rot, ref Translation trans) =>
         {
             float3 targetVelocity = new float3();
-            float speed = 1000;
-            float gravity = 60;
+            float speed = 9;
+            float gravity = 4;
 
             //Set target to input velocity
             targetVelocity.x = input.move.x;
-            targetVelocity.z = input.move.y;            
+            targetVelocity.z = input.move.y;
 
             //Calculate how fast we should be moving
             targetVelocity = TransformDirection(toWorld.Value, targetVelocity); //Change from local space to world space
-            targetVelocity *= speed * deltaTime;
+            targetVelocity *= speed * deltaTime * 100;
 
             //Apply a force that attempts to reach our target velocity
             float3 velocityChange = (targetVelocity - rb.Linear);
-            velocityChange.y = -gravity * deltaTime; //If we are't wall running or climbing a ladder apply gravity to the player
+            velocityChange.y = -gravity * deltaTime * 10; //If we are't wall running or climbing a ladder apply gravity to the player
 
             //Mouse movement
             rb.Angular.y = -input.mouseX * 2; //* deltaTime;
@@ -216,11 +216,12 @@ public class PhysicsControllerSystem : ComponentSystem
             //Debug and jump
             if (onGround)
             {
-                RigidBody r = physWorld.PhysicsWorld.Bodies[hit.RigidBodyIndex];
-                Debug.Log("Hit " + hit.RigidBodyIndex);
+                //RigidBody r = physWorld.PhysicsWorld.Bodies[hit.RigidBodyIndex];
+
+                Debug.Log("ground");
 
                 if (input.jump)
-                    rb.Linear.y = 13;
+                    rb.Linear.y = 10;
             }
 
             rb.Linear += velocityChange;

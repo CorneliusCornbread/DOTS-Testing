@@ -346,6 +346,8 @@ GameObject:
   - component: {fileID: 1874349000}
   - component: {fileID: 1874348999}
   - component: {fileID: 1874349001}
+  - component: {fileID: 1874349002}
+  - component: {fileID: 1874349003}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -467,6 +469,43 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 1
+--- !u!114 &1874349002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874348994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10234ab984868a047b8bad0704865812, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SerializedData:
+    moveRaw:
+      x: 0
+      y: 0
+    move:
+      x: 0
+      y: 0
+    alt: 0
+    mouseX: 0
+    mouseY: 0
+    shift: 0
+    jump: 0
+--- !u!114 &1874349003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874348994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 136e4e33899690945835aff9c9358cfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mInterface: {fileID: 1874349002}
 --- !u!1 &2014548468
 GameObject:
   m_ObjectHideFlags: 0
@@ -496,10 +535,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55702c7a66a6aea439493c9d16e17405, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jump: 0
-  move: {x: 0, y: 0}
-  mouse: {x: 0, y: 0}
-  alt: 0
+  time: 0.1
 --- !u!4 &2014548470
 Transform:
   m_ObjectHideFlags: 0
