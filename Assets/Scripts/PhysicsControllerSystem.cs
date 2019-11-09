@@ -193,7 +193,7 @@ public class PhysicsControllerSystem : ComponentSystem
             //Ground check
             float3 pos = trans.Value;
             float3 target = pos;
-            target.y -= 1;
+            target.y -= 1.25f;
 
             RaycastInput rInput = new RaycastInput()
             {
@@ -217,8 +217,6 @@ public class PhysicsControllerSystem : ComponentSystem
             if (onGround)
             {
                 //RigidBody r = physWorld.PhysicsWorld.Bodies[hit.RigidBodyIndex];
-
-                Debug.Log("ground");
 
                 if (input.jump)
                     rb.Linear.y = 10;
