@@ -2,16 +2,12 @@
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Physics;
-using Unity.Physics.Extensions;
 using Unity.Transforms;
 using Unity.Mathematics;
 using UnityEngine;
 using Unity.Collections;
-using Unity.Physics.Systems;
 
-
-/*
-//[BurstCompile]
+[BurstCompile]
 public class PhysicsControllerSystem : JobComponentSystem
 {
     private EntityQuery q;
@@ -21,8 +17,11 @@ public class PhysicsControllerSystem : JobComponentSystem
         public float deltaTime;
         public ArchetypeChunkComponentType<PhysicsVelocity> physVType;
         public ArchetypeChunkComponentType<PhysicsMass> physMassType;
+        [ReadOnly]
         public ArchetypeChunkComponentType<InputStruct> inputType;
+        [ReadOnly]
         public ArchetypeChunkComponentType<PhysicsControllerStruct> pControlType;
+        [ReadOnly]
         public ArchetypeChunkComponentType<LocalToWorld> toWorldType;
         public ArchetypeChunkComponentType<Rotation> rotType;
         public ArchetypeChunkComponentType<Translation> transType;
@@ -56,117 +55,15 @@ public class PhysicsControllerSystem : JobComponentSystem
                 //Set data in array to data we changed
                 physVel[i] = rb;
                 physMass[i] = pMass;
-                inputStructs[i] = inp;
-                controllers[i] = controllerStruct;
-                toWorlds[i] = toWorld;
+                //inputStructs[i] = inp;
+                //controllers[i] = controllerStruct;
+                //toWorlds[i] = toWorld;
                 rotations[i] = rot;
                 translations[i] = trans;
             }
         }
 
         public void Move(ref PhysicsVelocity rb, ref PhysicsMass mass, ref InputStruct input, ref PhysicsControllerStruct playerData, ref LocalToWorld toWorld, ref Rotation rot, ref Translation trans)
-        {
-            float3 targetVelocity = new float3();
-            float speed = 1000;
-            float gravity = 1;
-
-            float maxVelocityChange = 10;
-
-            //Set target to input velocity
-            targetVelocity.x = input.horizontal;
-            targetVelocity.z = input.vertical;            
-
-            //Calculate how fast we should be moving
-            targetVelocity = TransformDirection(toWorld.Value, targetVelocity); //Change from local space to world space
-            targetVelocity *= speed * deltaTime;
-
-            //Apply a force that attempts to reach our target velocity
-            float3 velocity = rb.Linear;
-            float3 velocityChange = (targetVelocity - velocity);
-            velocityChange.x = math.clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
-            velocityChange.z = math.clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
-            velocityChange.y = -gravity; //If we are't wall running or climbing a ladder apply gravity to the player
-
-            //Mouse movement
-            rb.Angular.y = -input.mouseX * 2; //* deltaTime;
-
-            mass.InverseInertia[0] = 0;
-            mass.InverseInertia[2] = 0;
-
-            float3 pos = trans.Value;
-            float3 target = pos;
-            target.y -= 2;
-
-            RaycastInput rInput = new RaycastInput()
-            {
-                Start = pos,
-                End = target,
-                Filter = new CollisionFilter()
-                {
-                    BelongsTo = 1,
-                    CollidesWith = 1,
-                    GroupIndex = 1
-                }
-            };
-
-            BuildPhysicsWorld physWorld = World.Active.GetExistingSystem<BuildPhysicsWorld>();
-            CollisionWorld collisionWorld = physWorld.PhysicsWorld.CollisionWorld;
-
-            collisionWorld.CastRay(rInput, out Unity.Physics.RaycastHit hit);
-
-            //Debug.Log(hit.ToString());
-
-            rb.Linear += velocityChange;
-        }
-    }
-    
-    public static float3 TransformDirection(float4x4 a, float3 b)
-    {
-        return (a.c0 * b.x + a.c1 * b.y + a.c2 * b.z).xyz;
-    }
-    
-    protected override void OnCreate()
-    {
-        q = GetEntityQuery
-            (
-            typeof(PhysicsVelocity),
-            typeof(PhysicsMass),
-            typeof(InputStruct),
-            typeof(PhysicsControllerStruct),
-            typeof(LocalToWorld),
-            typeof(Rotation),
-            typeof(Translation),
-            typeof(PhysicsCollider)
-            );
-    }
-
-    protected override JobHandle OnUpdate(JobHandle inputDeps)
-    {
-        //Setup job
-        MoveJob job = new MoveJob
-        {
-            physVType = GetArchetypeChunkComponentType<PhysicsVelocity>(),
-            physMassType = GetArchetypeChunkComponentType<PhysicsMass>(),
-            inputType = GetArchetypeChunkComponentType<InputStruct>(),
-            pControlType = GetArchetypeChunkComponentType<PhysicsControllerStruct>(),
-            toWorldType = GetArchetypeChunkComponentType<LocalToWorld>(),
-            rotType = GetArchetypeChunkComponentType<Rotation>(),
-            transType = GetArchetypeChunkComponentType<Translation>(),
-            deltaTime = Time.deltaTime
-        };
-
-        return job.Schedule(q, inputDeps);
-    }
-    
-}*/
-
-public class PhysicsControllerSystem : ComponentSystem
-{
-    protected override void OnUpdate()
-    {
-        float deltaTime = Time.deltaTime;
-
-        Entities.ForEach((ref PhysicsVelocity rb, ref PhysicsMass mass, ref InputStruct input, ref LocalToWorld toWorld, ref Rotation rot, ref Translation trans) =>
         {
             float3 targetVelocity = new float3();
             float speed = 9;
@@ -190,44 +87,55 @@ public class PhysicsControllerSystem : ComponentSystem
             mass.InverseInertia[0] = 0;
             mass.InverseInertia[2] = 0;
 
-            //Ground check
-            float3 pos = trans.Value;
-            float3 target = pos;
-            target.y -= 1.25f;
-
-            RaycastInput rInput = new RaycastInput()
+            if (playerData.isGrounded && input.jump)
             {
-                Start = pos,
-                End = target,
-                Filter = new CollisionFilter()
-                {
-                    BelongsTo = 1,
-                    CollidesWith = 2,
-                    GroupIndex = 1
-                }
-            };
-
-            BuildPhysicsWorld physWorld = World.Active.GetExistingSystem<BuildPhysicsWorld>();
-            CollisionWorld collisionWorld = physWorld.PhysicsWorld.CollisionWorld;
-
-            //Ground check raycast
-            bool onGround = collisionWorld.CastRay(rInput, out Unity.Physics.RaycastHit hit);
-            
-            //Debug and jump
-            if (onGround)
-            {
-                //RigidBody r = physWorld.PhysicsWorld.Bodies[hit.RigidBodyIndex];
-
-                if (input.jump)
-                    rb.Linear.y = 10;
+                rb.Linear.y = 10;
             }
 
             rb.Linear += velocityChange;
-        });
+        }
     }
-
+    
     public static float3 TransformDirection(float4x4 a, float3 b)
     {
         return (a.c0 * b.x + a.c1 * b.y + a.c2 * b.z).xyz;
     }
+    
+    protected override void OnCreate()
+    {
+        var query = new EntityQueryDesc
+        {
+            All = new ComponentType[]
+            {
+                ComponentType.ReadWrite<PhysicsVelocity>(),
+                ComponentType.ReadWrite<PhysicsMass>(),
+                ComponentType.ReadOnly<InputStruct>(),
+                ComponentType.ReadOnly<PhysicsControllerStruct>(),
+                ComponentType.ReadOnly<LocalToWorld>(),
+                ComponentType.ReadWrite<Rotation>(),
+                ComponentType.ReadWrite<Translation>(),
+            }
+        };
+
+        q = GetEntityQuery(query);
+    }
+
+    protected override JobHandle OnUpdate(JobHandle inputDeps)
+    {
+        //Setup job
+        MoveJob job = new MoveJob
+        {
+            physVType = GetArchetypeChunkComponentType<PhysicsVelocity>(false),
+            physMassType = GetArchetypeChunkComponentType<PhysicsMass>(false),
+            inputType = GetArchetypeChunkComponentType<InputStruct>(true),
+            pControlType = GetArchetypeChunkComponentType<PhysicsControllerStruct>(true),
+            toWorldType = GetArchetypeChunkComponentType<LocalToWorld>(true),
+            rotType = GetArchetypeChunkComponentType<Rotation>(false),
+            transType = GetArchetypeChunkComponentType<Translation>(false),
+            deltaTime = Time.deltaTime
+        };
+
+        return job.Schedule(q, inputDeps);
+    }
+    
 }

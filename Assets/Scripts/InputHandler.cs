@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Unity.Entities;
-using Unity.Jobs;
+﻿using Unity.Entities;
 using Unity.Burst;
 
 public class InputHandler : ComponentSystem
@@ -12,7 +8,7 @@ public class InputHandler : ComponentSystem
     {
         if (MonoInputManager.instance == null)
         {
-            Debug.LogWarning("Waiting for MonoInputManager");
+            BurstDebug.LogWarning("Waiting for MonoInputManager");
             return;
         }
 

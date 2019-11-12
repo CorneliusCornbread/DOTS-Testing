@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Unity.Entities;
-using UnityEngine;
+﻿using Unity.Entities;
 
 public struct PhysicsControllerStruct : IComponentData
 {
     public uint playerID;
+    public bool isGrounded;
+    public int rbIndex;
 }

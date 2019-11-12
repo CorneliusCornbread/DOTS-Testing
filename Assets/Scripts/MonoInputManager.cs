@@ -1,19 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Burst;
+using Unity.Mathematics;
 
+[BurstCompile]
 public class MonoInputManager : MonoBehaviour
 {
     public static MonoInputManager instance;
     private PlayerControls controls;
 
     public bool jump { get; private set; } = false;
-    public Vector2 move { get; private set; }
-    public Vector2 mouse { get; private set; }
+    public float2 move { get; private set; }
+    public float2 mouse { get; private set; }
     public float alt { get; private set; }
 
-    public Vector2 smoothedMove { get; private set; }
+    public float2 smoothedMove { get; private set; }
 
     public const float time = 0.08f;
     public const float max = 10;
@@ -23,20 +24,31 @@ public class MonoInputManager : MonoBehaviour
 
     private void OnEnable()
     {
-        controls.Player.Enable();
+        if (controls != null)
+        {
+            controls.Player.Enable();
+        }
+
+        else
+        {
+            BurstDebug.LogWarning("Object enabled without a PlayerControls reference, this could cause unintentional side effects");
+        }
     }
 
     private void OnDisable()
     {
-        controls.Player.Disable();
+        if (controls != null)
+        {
+            controls.Player.Disable();
+        }
     }
 
     void Awake()
     {
         if (instance != null)
         {
-            Debug.LogError("Cannot have multiple instances of MonoInputManager (gameobject: " + gameObject.name + ")");
-            return;
+            enabled = false;
+            throw new UnityMiscExceptions.ExistingSingletonException("MonoInputManager");
         }
 
         controls = new PlayerControls();
@@ -57,7 +69,7 @@ public class MonoInputManager : MonoBehaviour
 
     private void Update()
     {
-        Vector2 m = smoothedMove;
+        float2 m = smoothedMove;
         float x;
         float y;
 
@@ -102,22 +114,22 @@ public class MonoInputManager : MonoBehaviour
 
     private void MouseClear(InputAction.CallbackContext obj)
     {
-        mouse = new Vector2();
+        mouse = new float2();
     }
 
     private void Mouse(InputAction.CallbackContext obj)
     {
-        mouse = obj.ReadValue<Vector2>();
+        mouse = obj.ReadValue<float2>();
     }
 
     private void MoveClear(InputAction.CallbackContext obj)
     {
-        move = new Vector2();
+        move = new float2();
     }
 
     private void Move(InputAction.CallbackContext obj)
     {
-        move = obj.ReadValue<Vector2>();
+        move = obj.ReadValue<float2>();
     }
 
 

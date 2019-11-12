@@ -38,8 +38,8 @@ public class PlayerControls : IInputActionCollection, IDisposable
                     ""name"": ""Look"",
                     ""type"": ""PassThrough"",
                     ""id"": ""20f0c09e-1c23-48dd-a9da-010f0d8f0f36"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": ""ScaleVector2(x=0.1,y=0.1)"",
+                    ""expectedControlType"": ""float2"",
+                    ""processors"": ""Scalefloat2(x=0.1,y=0.1)"",
                     ""interactions"": """"
                 },
                 {

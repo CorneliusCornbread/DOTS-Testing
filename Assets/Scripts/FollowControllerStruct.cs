@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-using Unity.Entities;
-using Unity.Jobs;
+﻿using Unity.Entities;
 using Unity.Mathematics;
 
 public struct FollowControllerStruct : IComponentData
