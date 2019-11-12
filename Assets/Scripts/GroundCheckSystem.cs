@@ -4,6 +4,9 @@ using Unity.Transforms;
 using Unity.Mathematics;
 using Unity.Physics.Systems;
 using Unity.Burst;
+using UnityEngine;
+using Unity.Collections;
+using Unity.Jobs;
 
 [BurstCompile]
 public class GroundCheckSystem : ComponentSystem
@@ -33,7 +36,7 @@ public class GroundCheckSystem : ComponentSystem
             CollisionWorld collisionWorld = physWorld.PhysicsWorld.CollisionWorld;
 
             //Ground check raycast
-            player.isGrounded = collisionWorld.CastRay(rInput, out RaycastHit hit);
+            player.isGrounded = collisionWorld.CastRay(rInput, out Unity.Physics.RaycastHit hit);
 
             //Rigidbody hit
             player.rbIndex = hit.RigidBodyIndex;

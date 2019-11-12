@@ -119,7 +119,7 @@ public class MonoInputManager : MonoBehaviour
 
     private void Mouse(InputAction.CallbackContext obj)
     {
-        mouse = obj.ReadValue<float2>();
+        mouse = obj.ReadValue<Vector2>();
     }
 
     private void MoveClear(InputAction.CallbackContext obj)
@@ -129,7 +129,7 @@ public class MonoInputManager : MonoBehaviour
 
     private void Move(InputAction.CallbackContext obj)
     {
-        move = obj.ReadValue<float2>();
+        move = obj.ReadValue<Vector2>();
     }
 
 

@@ -93,6 +93,12 @@ public class PhysicsControllerSystem : JobComponentSystem
             }
 
             rb.Linear += velocityChange;
+
+            if (trans.Value.y < -20)
+            {
+                BurstDebug.Log("Fell too far, moving player home");
+                trans.Value = new float3(3, 6, 40);
+            }
         }
     }
     

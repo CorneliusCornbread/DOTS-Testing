@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Unity.Mathematics;
-using UnityEngine;
+﻿using UnityEngine;
+using Unity.Burst;
 
+[BurstCompile]
 public class MonoTest : MonoBehaviour
 {
     public MonoInterface mInterface;
@@ -12,7 +11,7 @@ public class MonoTest : MonoBehaviour
     {
         if (mInterface == null)
         {
-            Debug.LogError("AHHHHHHHHHHHHHHH");
+            BurstDebug.LogError("AHHHHHHHHHHHHHHH");
             gameObject.SetActive(false);
         }
 
@@ -24,7 +23,7 @@ public class MonoTest : MonoBehaviour
         //We can get the struct easily
         InputStruct s = mInterface.Value;
 
-        //This does not work
+        //This does not work:
         //mInterface.Value = s;
         //We cannot write to the value. Well we can, but nothing with actually happen.
         //It doesn't update the value from the monobehaviour

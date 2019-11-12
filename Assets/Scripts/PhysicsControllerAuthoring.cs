@@ -11,5 +11,14 @@ public class PhysicsControllerAuthoring : MonoBehaviour, IConvertGameObjectToEnt
         dstManager.AddComponentData(entity, new InputStruct());
         dstManager.AddComponentData(entity, new PhysicsControllerStruct());
         dstManager.AddComponentData(entity, new RotationEulerXYZ());
+
+        OutOfBoundsStruct bounds = new OutOfBoundsStruct()
+        {
+            maxY = 1000,
+            minY = -20,
+            resetPos = transform.position
+        };
+
+        dstManager.AddComponentData(entity, bounds);
     }
 }
