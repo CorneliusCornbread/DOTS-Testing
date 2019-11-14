@@ -89,17 +89,13 @@ public class PhysicsControllerSystem : JobComponentSystem
             mass.InverseInertia[0] = 0;
             mass.InverseInertia[2] = 0;
 
-            if (playerData.isGrounded && input.jump && playerData.timeSinceLastJump > .25f)
+            if (playerData.isGrounded && input.jump && playerData.timeSinceLastJump > .1f)
             {
-                BurstDebug.Log("Jump");
                 velocityChange.y = 10;
                 playerData.timeSinceLastJump = 0;
             }
 
-            else
-            {
-                playerData.timeSinceLastJump += deltaTime;
-            }
+            playerData.timeSinceLastJump += deltaTime;
 
             rb.ApplyLinearImpulse(mass, velocityChange);
         }
