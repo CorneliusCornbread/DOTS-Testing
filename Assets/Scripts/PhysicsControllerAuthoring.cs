@@ -9,7 +9,7 @@ public class PhysicsControllerAuthoring : MonoBehaviour, IConvertGameObjectToEnt
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         dstManager.AddComponentData(entity, new InputStruct());
-        dstManager.AddComponentData(entity, new PhysicsControllerStruct());
+        dstManager.AddComponentData(entity, new PhysicsControllerStruct() { timeSinceLastJump = 100 });
         dstManager.AddComponentData(entity, new RotationEulerXYZ());
 
         OutOfBoundsStruct bounds = new OutOfBoundsStruct()

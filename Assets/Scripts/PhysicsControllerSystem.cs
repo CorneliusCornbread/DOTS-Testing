@@ -6,6 +6,9 @@ using Unity.Transforms;
 using Unity.Mathematics;
 using UnityEngine;
 using Unity.Collections;
+using Unity.Physics.Extensions;
+using Unity.Physics.Systems;
+using static Unity.Physics.PhysicsStep;
 
 [BurstCompile]
 public class PhysicsControllerSystem : JobComponentSystem
@@ -19,7 +22,6 @@ public class PhysicsControllerSystem : JobComponentSystem
         public ArchetypeChunkComponentType<PhysicsMass> physMassType;
         [ReadOnly]
         public ArchetypeChunkComponentType<InputStruct> inputType;
-        [ReadOnly]
         public ArchetypeChunkComponentType<PhysicsControllerStruct> pControlType;
         [ReadOnly]
         public ArchetypeChunkComponentType<LocalToWorld> toWorldType;
@@ -56,7 +58,7 @@ public class PhysicsControllerSystem : JobComponentSystem
                 physVel[i] = rb;
                 physMass[i] = pMass;
                 //inputStructs[i] = inp;
-                //controllers[i] = controllerStruct;
+                controllers[i] = controllerStruct;
                 //toWorlds[i] = toWorld;
                 rotations[i] = rot;
                 translations[i] = trans;
@@ -79,7 +81,7 @@ public class PhysicsControllerSystem : JobComponentSystem
 
             //Apply a force that attempts to reach our target velocity
             float3 velocityChange = (targetVelocity - rb.Linear);
-            velocityChange.y = -gravity * deltaTime * 10; //If we are't wall running or climbing a ladder apply gravity to the player
+            velocityChange.y = -gravity * deltaTime * 10; //Apply gravity to the player
 
             //Mouse movement
             rb.Angular.y = -input.mouseX * 2; //* deltaTime;
@@ -87,12 +89,19 @@ public class PhysicsControllerSystem : JobComponentSystem
             mass.InverseInertia[0] = 0;
             mass.InverseInertia[2] = 0;
 
-            if (playerData.isGrounded && input.jump)
+            if (playerData.isGrounded && input.jump && playerData.timeSinceLastJump > .25f)
             {
-                rb.Linear.y = 10;
+                BurstDebug.Log("Jump");
+                velocityChange.y = 10;
+                playerData.timeSinceLastJump = 0;
             }
 
-            rb.Linear += velocityChange;
+            else
+            {
+                playerData.timeSinceLastJump += deltaTime;
+            }
+
+            rb.ApplyLinearImpulse(mass, velocityChange);
         }
     }
     
@@ -110,7 +119,7 @@ public class PhysicsControllerSystem : JobComponentSystem
                 ComponentType.ReadWrite<PhysicsVelocity>(),
                 ComponentType.ReadWrite<PhysicsMass>(),
                 ComponentType.ReadOnly<InputStruct>(),
-                ComponentType.ReadOnly<PhysicsControllerStruct>(),
+                ComponentType.ReadWrite<PhysicsControllerStruct>(),
                 ComponentType.ReadOnly<LocalToWorld>(),
                 ComponentType.ReadWrite<Rotation>(),
                 ComponentType.ReadWrite<Translation>(),
@@ -128,11 +137,11 @@ public class PhysicsControllerSystem : JobComponentSystem
             physVType = GetArchetypeChunkComponentType<PhysicsVelocity>(false),
             physMassType = GetArchetypeChunkComponentType<PhysicsMass>(false),
             inputType = GetArchetypeChunkComponentType<InputStruct>(true),
-            pControlType = GetArchetypeChunkComponentType<PhysicsControllerStruct>(true),
+            pControlType = GetArchetypeChunkComponentType<PhysicsControllerStruct>(false),
             toWorldType = GetArchetypeChunkComponentType<LocalToWorld>(true),
             rotType = GetArchetypeChunkComponentType<Rotation>(false),
             transType = GetArchetypeChunkComponentType<Translation>(false),
-            deltaTime = Time.deltaTime
+            deltaTime = Time.deltaTime,
         };
 
         return job.Schedule(q, inputDeps);

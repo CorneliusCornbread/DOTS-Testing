@@ -99,7 +99,7 @@ LightmapSettings:
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 112000002, guid: eaea2c8079ff3444493cfaefe34d991c,
     type: 2}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -973,8 +973,9 @@ GameObject:
   - component: {fileID: 1398796505}
   - component: {fileID: 1398796504}
   - component: {fileID: 1398796503}
-  - component: {fileID: 1398796502}
   - component: {fileID: 1398796501}
+  - component: {fileID: 1398796502}
+  - component: {fileID: 1398796507}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1177,3 +1178,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1398796507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1398796500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d30974bf68d61043b1572197db94cdc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SimulationType: 2
+  Gravity:
+    x: -0
+    y: -9.81
+    z: -0
+  SolverIterationCount: 4
+  ThreadCountHint: 8

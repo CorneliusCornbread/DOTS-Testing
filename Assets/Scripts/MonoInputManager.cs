@@ -16,7 +16,7 @@ public class MonoInputManager : MonoBehaviour
 
     public float2 smoothedMove { get; private set; }
 
-    public const float time = 0.08f;
+    public const float time = 0.06f;
     public const float max = 10;
 
     float velocX = 0;
