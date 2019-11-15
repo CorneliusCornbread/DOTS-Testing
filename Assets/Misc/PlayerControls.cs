@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-public class PlayerControls : IInputActionCollection, IDisposable
+public class @PlayerControls : IInputActionCollection, IDisposable
 {
     private InputActionAsset asset;
-    public PlayerControls()
+    public @PlayerControls()
     {
         asset = InputActionAsset.FromJson(@"{
     ""name"": ""PlayerControls"",
@@ -322,8 +322,8 @@ public class PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Alt;
     public struct PlayerActions
     {
-        private PlayerControls m_Wrapper;
-        public PlayerActions(PlayerControls wrapper) { m_Wrapper = wrapper; }
+        private @PlayerControls m_Wrapper;
+        public PlayerActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Look => m_Wrapper.m_Player_Look;
@@ -337,34 +337,34 @@ public class PlayerControls : IInputActionCollection, IDisposable
         {
             if (m_Wrapper.m_PlayerActionsCallbackInterface != null)
             {
-                Move.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMove;
-                Move.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMove;
-                Move.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMove;
-                Jump.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
-                Jump.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
-                Jump.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
-                Look.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
-                Look.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
-                Look.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
-                Alt.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAlt;
-                Alt.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAlt;
-                Alt.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAlt;
+                @Move.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMove;
+                @Move.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMove;
+                @Move.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMove;
+                @Jump.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                @Jump.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                @Jump.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                @Look.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
+                @Look.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
+                @Look.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
+                @Alt.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAlt;
+                @Alt.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAlt;
+                @Alt.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAlt;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
             {
-                Move.started += instance.OnMove;
-                Move.performed += instance.OnMove;
-                Move.canceled += instance.OnMove;
-                Jump.started += instance.OnJump;
-                Jump.performed += instance.OnJump;
-                Jump.canceled += instance.OnJump;
-                Look.started += instance.OnLook;
-                Look.performed += instance.OnLook;
-                Look.canceled += instance.OnLook;
-                Alt.started += instance.OnAlt;
-                Alt.performed += instance.OnAlt;
-                Alt.canceled += instance.OnAlt;
+                @Move.started += instance.OnMove;
+                @Move.performed += instance.OnMove;
+                @Move.canceled += instance.OnMove;
+                @Jump.started += instance.OnJump;
+                @Jump.performed += instance.OnJump;
+                @Jump.canceled += instance.OnJump;
+                @Look.started += instance.OnLook;
+                @Look.performed += instance.OnLook;
+                @Look.canceled += instance.OnLook;
+                @Alt.started += instance.OnAlt;
+                @Alt.performed += instance.OnAlt;
+                @Alt.canceled += instance.OnAlt;
             }
         }
     }
