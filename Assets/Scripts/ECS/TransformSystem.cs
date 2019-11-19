@@ -6,26 +6,25 @@ using UnityEngine;
 using Unity.Physics;
 
 
-public class TransformSystem : JobComponentSystem
+public class TransformSystem : ComponentSystem
 {
-    /* Component System implementation
+    //Component System implementation
     [BurstCompile]
     protected override void OnUpdate()
     {
         
         Entities.ForEach((ref TransformStruct data, ref InputStruct input, ref PhysicsVelocity rb) =>
         {
-            float deltaTime = Time.deltaTime;
-
             //euler.Value += data.rotX * deltaTime;
 
             //euler.Value.x += data.speed * input.mouseX * deltaTime;
             //euler.Value.z += data.speed * input.mouseY * deltaTime;
+            float deltaTime = Time.deltaTime;
 
             if (input.shift)
             {
-                float horiz = data.speed * input.horizontal * deltaTime * 500;
-                float vert = data.speed * input.vertical * deltaTime * 500;
+                float horiz = data.speed * input.move.x * deltaTime * 500;
+                float vert = data.speed * input.move.y * deltaTime * 500;
 
                 rb.Linear.z = horiz;
                 rb.Linear.x = -vert;
@@ -33,8 +32,8 @@ public class TransformSystem : JobComponentSystem
 
             else
             {
-                float horiz = data.speed * input.horizontal * deltaTime * 100;
-                float vert = data.speed * input.vertical * deltaTime * 100;
+                float horiz = data.speed * input.move.x * deltaTime * 100;
+                float vert = data.speed * input.move.y * deltaTime * 100;
 
                 rb.Linear.z = horiz;
                 rb.Linear.x = -vert;
@@ -72,7 +71,7 @@ public class TransformSystem : JobComponentSystem
                 rb.Linear.y += alt;
             }
         });
-    }*/
+    }//
 
     //Job Component System implementation
     [BurstCompile]
@@ -139,10 +138,11 @@ public class TransformSystem : JobComponentSystem
         }
     }
 
+    /*
     [BurstCompile]
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
         TransformJob job = new TransformJob { deltaTime = Time.deltaTime };
         return job.Schedule(this, inputDeps);
-    }
+    }*/
 }

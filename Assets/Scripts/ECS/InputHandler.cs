@@ -1,9 +1,9 @@
 ﻿using Unity.Entities;
 using Unity.Burst;
 
+[BurstCompile]
 public class InputHandler : ComponentSystem
 {
-    [BurstCompile]
     protected override void OnUpdate()
     {
         if (MonoInputManager.instance == null)

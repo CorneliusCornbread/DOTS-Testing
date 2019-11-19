@@ -7,8 +7,6 @@ using Unity.Mathematics;
 using UnityEngine;
 using Unity.Collections;
 using Unity.Physics.Extensions;
-using Unity.Physics.Systems;
-using static Unity.Physics.PhysicsStep;
 
 [BurstCompile]
 public class PhysicsControllerSystem : JobComponentSystem
