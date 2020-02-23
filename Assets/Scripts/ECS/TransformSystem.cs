@@ -19,7 +19,7 @@ public class TransformSystem : ComponentSystem
 
             //euler.Value.x += data.speed * input.mouseX * deltaTime;
             //euler.Value.z += data.speed * input.mouseY * deltaTime;
-            float deltaTime = Time.deltaTime;
+            float deltaTime = Time.DeltaTime;
 
             if (input.shift)
             {

@@ -135,7 +135,7 @@ public class PhysicsControllerSystem : JobComponentSystem
             toWorldType = GetArchetypeChunkComponentType<LocalToWorld>(true),
             rotType = GetArchetypeChunkComponentType<Rotation>(false),
             transType = GetArchetypeChunkComponentType<Translation>(false),
-            deltaTime = Time.deltaTime,
+            deltaTime = Time.DeltaTime,
         };
 
         return job.Schedule(q, inputDeps);
